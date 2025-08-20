@@ -7,7 +7,7 @@ public class Atlas {
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello I'm Atlas!");
         System.out.println("What can I do for you?");
-        System.out.println("Bye. Hope to see you again!");
+        System.out.println("Bye. Hope to see you again soon!");
     }
 }
 
