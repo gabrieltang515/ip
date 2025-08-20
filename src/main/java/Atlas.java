@@ -1,35 +1,63 @@
 import java.util.Scanner;
 
 public class Atlas {
+    private static final String LINE =
+            "____________________________________________________________";
+    private static final int MAX_TASKS = 100;
+    private final String[] tasks = new String[MAX_TASKS];
+    private int size = 0;
+
     public static void main(String[] args) {
-        String logo = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        String LINE =
-                "____________________________________________________________";
+        new Atlas().run();
+    }
 
-        System.out.println(LINE);
-        System.out.println("Hello I'm Atlas!");
-        System.out.println("What can I do for you?");
-        System.out.println(LINE);
+    private void run() {
+        say("Hello! I'm Atlas\nWhat can I do for you?");
 
-        Scanner in = new Scanner(System.in);
-        while (in.hasNextLine()) {
-            String input = in.nextLine();
-            if (input.equals("bye")) {
-                System.out.println(LINE);
-                System.out.println(" Bye. Hope to see you again soon!");
-                System.out.println(LINE);
-                break;
+        try (Scanner in = new Scanner(System.in)) {
+            while (in.hasNextLine()) {
+                String input = in.nextLine().trim();
+
+                if (input.equals("bye")) {
+                    say("Bye. Hope to see you again soon!");
+                    break;
+                } else if (input.equals("list")) {
+                    printList();
+                } else if (!input.isEmpty()) {
+                    addTask(input);
+                }
             }
-            System.out.println(LINE);
-            System.out.println(" " + input);   // echo
-            System.out.println(LINE);
         }
-        in.close();
+    }
+
+    private void addTask(String task) {
+        if (size >= MAX_TASKS) {
+            say("Sorry, task list is full (" + MAX_TASKS + ").");
+            return;
+        }
+        tasks[size++] = task;
+        say("added: " + task);
+    }
+
+    private void printList() {
+        if (size == 0) {
+            say("(no tasks yet)");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            sb.append(String.format("%d. %s%n", i + 1, tasks[i]));
+        }
+        say(sb.toString().trim());
+    }
+
+    private void say(String body) {
+        System.out.println(LINE);
+        // body may be multi-line (greeting and list); indent once like the sample
+        for (String line : body.split("\\R")) {
+            System.out.println(" " + line);
+        }
+        System.out.println(LINE);
     }
 }
-
-
