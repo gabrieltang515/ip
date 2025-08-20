@@ -12,52 +12,95 @@ public class Atlas {
 
     private void run() {
         say("Hello! I'm Atlas\nWhat can I do for you?");
-
         try (Scanner in = new Scanner(System.in)) {
             while (in.hasNextLine()) {
-                String input = in.nextLine().trim();
-
-                if (input.equals("bye")) {
-                    say("Bye. Hope to see you again soon!");
-                    break;
-                } else if (input.equals("list")) {
-                    printList();
-                } else if (input.startsWith("mark ")) {
-                    markCommand(input);
-                } else if (input.startsWith("unmark ")) {
-                    unmarkCommand(input);
-                } else if (input.startsWith("todo ")) {
-                    String desc = input.substring(5).trim();
-                    if (desc.isEmpty()) { say("Oops. The description of a todo cannot be empty."); continue; }
-                    add(new Todo(desc));
-                } else if (input.startsWith("deadline ")) {
-                    String rest = input.substring(9).trim(); // "<desc> /by <when>"
-                    int at = rest.indexOf(" /by ");
-                    if (at < 0) { say("Oops. Use: deadline <desc> /by <when>"); continue; }
-                    String desc = rest.substring(0, at).trim();
-                    String by   = rest.substring(at + 5).trim();
-                    if (desc.isEmpty() || by.isEmpty()) { say("Oops. Description and /by must be provided."); continue; }
-                    add(new Deadline(desc, by));
-                } else if (input.startsWith("event ")) {
-                    String rest = input.substring(6).trim(); // "<desc> /from <start> /to <end>"
-                    int fromAt = rest.indexOf(" /from ");
-                    int toAt   = rest.indexOf(" /to ");
-                    if (fromAt < 0 || toAt < 0 || toAt <= fromAt) { say("Oops. Use: event <desc> /from <start> /to <end>"); continue; }
-                    String desc = rest.substring(0, fromAt).trim();
-                    String from = rest.substring(fromAt + 7, toAt).trim();
-                    String to   = rest.substring(toAt + 5).trim();
-                    if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) { say("Oops. Description, /from and /to must be provided."); continue; }
-                    add(new Event(desc, from, to));
-                } else if (!input.isEmpty()) {
-                    // Fallback: treat a bare line as a Todo
-                    add(new Todo(input));
+                String input = in.nextLine();
+                try {
+                    handle(input.trim());   // parse + validate + act
+                } catch (AtlasException e) {
+                    say("Oops — " + e.getMessage());
                 }
             }
         }
     }
 
-    private void add(Task t) {
-        if (size >= MAX_TASKS) { say("Sorry, task list is full (" + MAX_TASKS + ")."); return; }
+    // Handles all cases including invalid inputs
+    private void handle(String input) throws AtlasException {
+        if (input.isEmpty()) return;
+
+        String[] parts = input.split("\\s+", 2);
+        String cmd = parts[0];
+
+        switch (cmd) {
+            case "bye":
+                say("Bye. Hope to see you again soon!");
+                System.exit(0);
+                return;
+
+            case "list":
+                printList();
+                return;
+
+            case "mark": {
+                int idx = parseIndex(parts, "mark");
+                tasks[idx].mark();
+                say("Nice! I've marked this task as done:\n " + tasks[idx]);
+                return;
+            }
+
+            case "unmark": {
+                int idx = parseIndex(parts, "unmark");
+                tasks[idx].unmark();
+                say("OK, I've marked this task as not done yet:\n " + tasks[idx]);
+                return;
+            }
+
+            case "todo": {
+                String desc = requireArg(parts,
+                        "The description of a todo cannot be empty.\n  Try: todo borrow book");
+                add(new Todo(desc));
+                return;
+            }
+
+            case "deadline": {
+                String rest = requireArg(parts, "Usage: deadline <desc> /by <when>");
+                int at = rest.indexOf(" /by ");
+                if (at < 0) throw new AtlasException(
+                        "Missing '/by'.\n  Try: deadline return book /by Sunday");
+                String desc = rest.substring(0, at).trim();
+                String by   = rest.substring(at + 5).trim();
+                if (desc.isEmpty() || by.isEmpty()) {
+                    throw new AtlasException("Description and '/by' value must be provided.");
+                }
+                add(new Deadline(desc, by));
+                return;
+            }
+
+            case "event": {
+                String rest = requireArg(parts, "Usage: event <desc> /from <start> /to <end>");
+                int fromAt = rest.indexOf(" /from ");
+                int toAt   = rest.indexOf(" /to ");
+                if (fromAt < 0 || toAt < 0 || toAt <= fromAt) {
+                    throw new AtlasException(
+                            "Missing '/from' or '/to'.\n  Try: event project /from Mon 2pm /to 4pm");
+                }
+                String desc = rest.substring(0, fromAt).trim();
+                String from = rest.substring(fromAt + 7, toAt).trim();
+                String to   = rest.substring(toAt + 5).trim();
+                if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
+                    throw new AtlasException("Description, '/from', and '/to' must be provided.");
+                }
+                add(new Event(desc, from, to));
+                return;
+            }
+
+            default:
+                throw new AtlasException("I don't recognise that command: '" + cmd + "'.");
+        }
+    }
+
+    private void add(Task t) throws AtlasException {
+        if (size >= MAX_TASKS) throw new AtlasException("Task list is full (" + MAX_TASKS + ").");
         tasks[size++] = t;
         say("Got it. I've added this task:\n " + t + "\nNow you have " + size + " tasks in the list.");
     }
@@ -70,29 +113,30 @@ public class Atlas {
         say(sb.toString().trim());
     }
 
-    private void markCommand(String input) {
-        Integer idx = parseIndex(input);
-        if (idx == null || idx < 0 || idx >= size) { say("Please provide a valid task number to mark."); return; }
-        tasks[idx].mark();
-        say("Nice! I've marked this task as done:\n " + tasks[idx]);
-    }
-
-    private void unmarkCommand(String input) {
-        Integer idx = parseIndex(input);
-        if (idx == null || idx < 0 || idx >= size) { say("Please provide a valid task number to unmark."); return; }
-        tasks[idx].unmark();
-        say("OK, I've marked this task as not done yet:\n " + tasks[idx]);
-    }
-
-    private Integer parseIndex(String input) {
-        String[] p = input.split("\\s+");
-        if (p.length < 2) return null;
-        try { return Integer.parseInt(p[1]) - 1; } catch (NumberFormatException e) { return null; }
-    }
-
     private void say(String body) {
         System.out.println(LINE);
         for (String line : body.split("\\R")) System.out.println(" " + line);
         System.out.println(LINE);
     }
+
+    // Ensures there is a second argument
+    private String requireArg(String[] parts, String errorMessage) throws AtlasException {
+        if (parts.length < 2 || parts[1].trim().isEmpty()) throw new AtlasException(errorMessage);
+        return parts[1].trim();
+    }
+
+    // Parses to 0-base index
+    private int parseIndex(String[] parts, String command) throws AtlasException {
+        String usage = "Usage: " + command + " <task number>";
+        if (parts.length < 2) throw new AtlasException(usage);
+        String token = parts[1].trim();
+        int n;
+        try { n = Integer.parseInt(token); }
+        catch (NumberFormatException e) {
+            throw new AtlasException("Task number must be a positive integer. " + usage);
+        }
+        if (n < 1 || n > size) throw new AtlasException("Task " + token + " is out of range (1.." + size + ").");
+        return n - 1;
+    }
+
 }
