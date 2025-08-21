@@ -1,11 +1,12 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Atlas {
     private static final String LINE =
             "____________________________________________________________";
     private static final int MAX_TASKS = 100;
 
-    private final Task[] tasks = new Task[MAX_TASKS];
+    private final ArrayList<Task> tasks = new ArrayList<>();
     private int size = 0;
 
     public static void main(String[] args) { new Atlas().run(); }
@@ -43,15 +44,15 @@ public class Atlas {
 
             case "mark": {
                 int idx = parseIndex(parts, "mark");
-                tasks[idx].mark();
-                say("Nice! I've marked this task as done:\n " + tasks[idx]);
+                tasks.get(idx).mark();
+                say("Nice! I've marked this task as done:\n " + tasks.get(idx));
                 return;
             }
 
             case "unmark": {
                 int idx = parseIndex(parts, "unmark");
-                tasks[idx].unmark();
-                say("OK, I've marked this task as not done yet:\n " + tasks[idx]);
+                tasks.get(idx).unmark();
+                say("OK, I've marked this task as not done yet:\n " + tasks.get(idx));
                 return;
             }
 
@@ -94,22 +95,34 @@ public class Atlas {
                 return;
             }
 
+            case "delete": {
+                int idx = parseIndex(parts, "delete");
+                Task removed = tasks.remove(idx);
+                say("Noted. I've removed this task:\n " + removed +
+                        "\nNow you have " + tasks.size() + " tasks in the list.");
+                return;
+            }
+
             default:
                 throw new AtlasException("I don't recognise that command: '" + cmd + "'.");
         }
     }
 
     private void add(Task t) throws AtlasException {
-        if (size >= MAX_TASKS) throw new AtlasException("Task list is full (" + MAX_TASKS + ").");
-        tasks[size++] = t;
-        say("Got it. I've added this task:\n " + t + "\nNow you have " + size + " tasks in the list.");
+        tasks.add(t);
+        say("Got it. I've added this task:\n " + t + "\nNow you have " + tasks.size() + " tasks in the list.");
     }
 
     private void printList() {
-        if (size == 0) { say("(no tasks yet)"); return; }
+        if (tasks.isEmpty()) {
+            say("(no tasks yet)");
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("Here are the tasks in your list:").append(System.lineSeparator());
-        for (int i = 0; i < size; i++) sb.append(String.format("%d.%s%n", i + 1, tasks[i]));
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append(String.format("%d.%s%n", i + 1, tasks.get(i)));
+        }
         say(sb.toString().trim());
     }
 
@@ -117,6 +130,11 @@ public class Atlas {
         System.out.println(LINE);
         for (String line : body.split("\\R")) System.out.println(" " + line);
         System.out.println(LINE);
+    }
+
+    // For deletion
+    private void delete(Task t) throws AtlasException {
+
     }
 
     // Ensures there is a second argument
@@ -135,8 +153,9 @@ public class Atlas {
         catch (NumberFormatException e) {
             throw new AtlasException("Task number must be a positive integer. " + usage);
         }
-        if (n < 1 || n > size) throw new AtlasException("Task " + token + " is out of range (1.." + size + ").");
+        if (n < 1 || n > tasks.size()) {
+            throw new AtlasException("Task " + token + " is out of range (1.." + size + ").");
+        }
         return n - 1;
     }
-
 }
