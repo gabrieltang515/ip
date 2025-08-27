@@ -2,7 +2,7 @@
 
 # ---------- config ----------
 MAIN=Atlas
-SAVE_FILE="data/duke.txt"   # must match the path you use in Storage
+SAVE_FILE="data/Atlas.txt"   # must match the path you use in Storage
 BIN="../bin"
 SRC="../src/main/java"
 
