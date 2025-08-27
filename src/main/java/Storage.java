@@ -58,33 +58,33 @@ public class Storage {
             String type = p[0];
             boolean done = "1".equals(p[1]);
             switch (type) {
-                case "T": {
-                    Task t = new Todo(p[2]);
-                    if (done) {
-                        t.mark();
-                    }
-                    return t;
+            case "T": {
+                Task t = new Todo(p[2]);
+                if (done) {
+                    t.mark();
                 }
+                return t;
+            }
 
-                case "D": {
-                    Deadline d = new Deadline(p[2], p[3]);
-                    if (done) {
-                        d.mark();
-                    }
-                    return d;
+            case "D": {
+                Deadline d = new Deadline(p[2], p[3]);
+                if (done) {
+                    d.mark();
                 }
+                return d;
+            }
 
-                case "E": {
-                    Event e = new Event(p[2], p[3], p[4]);
-                    if (done) {
-                        e.mark();
-                    }
-                    return e;
+            case "E": {
+                Event e = new Event(p[2], p[3], p[4]);
+                if (done) {
+                    e.mark();
                 }
+                return e;
+            }
 
-                default: {
-                    return null;
-                }
+            default: {
+                return null;
+            }
             }
         } catch (Exception ignore) {
             return null;
