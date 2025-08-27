@@ -1,38 +1,65 @@
 #!/usr/bin/env bash
 
-# create bin directory if it doesn't exist
-if [ ! -d "../bin" ]
+# ---------- config ----------
+MAIN=Atlas
+SAVE_FILE="data/duke.txt"   # must match the path you use in Storage
+BIN="../bin"
+SRC="../src/main/java"
+
+# ---------- helpers ----------
+normalize () {
+  # normalize line endings -> UNIX
+  # usage: normalize <in> <out>
+  if command -v dos2unix >/dev/null 2>&1; then
+    cp "$1" "$2"
+    dos2unix "$2" >/dev/null 2>&1
+  else
+    # fallback if dos2unix isn't installed
+    sed $'s/\r$//' "$1" > "$2"
+  fi
+}
+
+# ---------- setup ----------
+[ -d "$BIN" ] || mkdir "$BIN"
+
+rm -f ACTUAL1.TXT ACTUAL2.TXT ACTUAL-SAVE.TXT \
+      ACTUAL2-UNIX.TXT ACTUAL-SAVE-UNIX.TXT \
+      EXPECTED2-UNIX.TXT EXPECTED-SAVE-UNIX.TXT
+
+# start from clean storage (first-run scenario)
+rm -rf data
+
+# ---------- compile ----------
+if ! javac -cp "$SRC" -Xlint:none -d "$BIN" "$SRC"/*.java
 then
-    mkdir ../bin
+  echo "********** BUILD FAILURE **********"
+  exit 1
 fi
 
-# delete output from previous run
-if [ -e "./ACTUAL.TXT" ]
-then
-    rm ACTUAL.TXT
-fi
+# ---------- RUN #1: create + save ----------
+java -classpath "$BIN" "$MAIN" < input1.txt > ACTUAL1.TXT
 
-# compile the code into the bin folder, terminates if error occurred
-if ! javac -cp ../src/main/java -Xlint:none -d ../bin ../src/main/java/*.java
-then
-    echo "********** BUILD FAILURE **********"
-    exit 1
-fi
-
-# run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ../bin Atlas < input.txt > ACTUAL.TXT
-
-# convert to UNIX format
-cp EXPECTED.TXT EXPECTED-UNIX.TXT
-dos2unix ACTUAL.TXT EXPECTED-UNIX.TXT
-
-# compare the output to the expected output
-diff ACTUAL.TXT EXPECTED-UNIX.TXT
-if [ $? -eq 0 ]
-then
-    echo "Test result: PASSED"
-    exit 0
+# capture save file produced by run #1
+if [ -f "$SAVE_FILE" ]; then
+  cp "$SAVE_FILE" ACTUAL-SAVE.TXT
 else
-    echo "Test result: FAILED"
-    exit 1
+  echo "Save file not found!" > ACTUAL-SAVE.TXT
 fi
+
+# ---------- RUN #2: load + list ----------
+java -classpath "$BIN" "$MAIN" < input2.txt > ACTUAL2.TXT
+
+# ---------- normalize line endings for diffs ----------
+normalize ACTUAL2.TXT           ACTUAL2-UNIX.TXT
+normalize EXPECTED2.TXT         EXPECTED2-UNIX.TXT
+normalize ACTUAL-SAVE.TXT       ACTUAL-SAVE-UNIX.TXT
+normalize EXPECTED-SAVE.TXT     EXPECTED-SAVE-UNIX.TXT
+
+# ---------- compare ----------
+echo "Comparing save file..."
+diff ACTUAL-SAVE-UNIX.TXT EXPECTED-SAVE-UNIX.TXT || { echo "Test result: FAILED"; exit 1; }
+
+echo "Comparing second run output..."
+diff ACTUAL2-UNIX.TXT EXPECTED2-UNIX.TXT || { echo "Test result: FAILED"; exit 1; }
+
+echo "Test result: PASSED"
