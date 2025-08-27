@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # ---------- config ----------
-MAIN=Atlas
-SAVE_FILE="data/Atlas.txt"   # must match the path you use in Storage
+MAIN=atlas.Atlas
+SAVE_FILE="data/Atlas.txt"   # must match the path you use in atlas.Storage
 BIN="../bin"
 SRC="../src/main/java"
 
@@ -30,14 +30,14 @@ rm -f ACTUAL1.TXT ACTUAL2.TXT ACTUAL-SAVE.TXT \
 rm -rf data
 
 # ---------- compile ----------
-if ! javac -cp "$SRC" -Xlint:none -d "$BIN" "$SRC"/*.java
+if ! javac -Xlint:none -d ../bin ../src/main/java/atlas/*.java;
 then
   echo "********** BUILD FAILURE **********"
   exit 1
 fi
 
 # ---------- RUN #1: create + save ----------
-java -classpath "$BIN" "$MAIN" < input1.txt > ACTUAL1.TXT
+java -classpath ../bin atlas.Atlas < input1.txt > ACTUAL.TXT
 
 # capture save file produced by run #1
 if [ -f "$SAVE_FILE" ]; then

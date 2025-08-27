@@ -1,3 +1,5 @@
+package atlas;
+
 public abstract class Task {
     protected String description;
     protected boolean isDone;
@@ -19,7 +21,7 @@ public abstract class Task {
         return isDone ? "X" : " ";
     }
 
-    // typeCode can return T, D or E (Task, Deadline or Event)
+    // typeCode can return T, D or E (atlas.Task, atlas.Deadline or atlas.Event)
     protected abstract String typeCode();
 
     public String toSave() {

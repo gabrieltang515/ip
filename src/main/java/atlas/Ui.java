@@ -1,3 +1,5 @@
+package atlas;
+
 public class Ui {
     private static final String LINE = "____________________________________________________________";
     
@@ -10,7 +12,7 @@ public class Ui {
     }
     
     public void showGreeting() {
-        show("Hello! I am Atlas \nWhat can I do for you?");
+        show("Hello! I am atlas.Atlas \nWhat can I do for you?");
     }
     
     public void showBye() {

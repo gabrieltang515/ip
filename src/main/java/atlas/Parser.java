@@ -1,3 +1,5 @@
+package atlas;
+
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
@@ -131,10 +133,10 @@ public class Parser {
             try {
                 n = Integer.parseInt(token);
             } catch (NumberFormatException e) {
-                throw new AtlasException("Task number must be a positive integer. " + usage);
+                throw new AtlasException("atlas.Task number must be a positive integer. " + usage);
             }
             if (n < 1 || n > size) {
-                throw new AtlasException("Task " + token + " is out of range (1.." + size + ").");
+                throw new AtlasException("atlas.Task " + token + " is out of range (1.." + size + ").");
             }
             return n - 1;
         }

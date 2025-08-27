@@ -1,3 +1,5 @@
+package atlas;
+
 import java.util.Scanner;
 
 public class Atlas {
