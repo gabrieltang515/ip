@@ -9,7 +9,7 @@ public class Atlas {
     private final ArrayList<Task> tasks = new ArrayList<>();
     private int size = 0;
     
-    private final Storage storage = new Storage("data/duke.txt");
+    private final Storage storage = new Storage("data/Atlas.txt");
     
     public static void main(String[] args) {
         new Atlas().run();
@@ -72,14 +72,14 @@ public class Atlas {
         }
         
         case "deadline": {
-            String rest = requireArg(parts, "Usage: deadline <desc> /by <when>");
+            String rest = requireArg(parts, "Usage: deadline <desc> /by <yyyy-MM-dd>");
             int at = rest.indexOf(" /by ");
             if (at < 0) throw new AtlasException(
-                    "Missing '/by'.\n  Try: deadline return book /by Sunday");
+                    "Missing '/by'.\n  Try: deadline return book /by 2019-10-15");
             String desc = rest.substring(0, at).trim();
             String by = rest.substring(at + 5).trim();
             if (desc.isEmpty() || by.isEmpty()) {
-                throw new AtlasException("Description and '/by' value must be provided.");
+                throw new AtlasException("Description and ISO date (yyyy-MM-dd) must be provided.");
             }
             add(new Deadline(desc, by));
             return;
