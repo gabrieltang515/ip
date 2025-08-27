@@ -9,7 +9,19 @@ public class Event extends Task {
     }
 
     @Override
+    protected String typeCode() {
+        return "E";
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }
+
+    @Override
+    public String toSave() {
+        return String.format("%s | %d | %s | %s | %s",
+                typeCode(), isDone ? 1 : 0, description, from, to);
+    }
+
 }
