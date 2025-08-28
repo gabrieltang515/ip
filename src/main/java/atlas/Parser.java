@@ -117,6 +117,11 @@ public class Parser {
             return false;
         }
 
+        case "find": {
+            String keyword = requireArg(parts, "Usage: find <keyword>");
+            ui.show(tasks.formatMatches(keyword));
+            return false;
+        }
 
         default:
             throw new AtlasException("I don't recognise that command: '" + cmd + "'.");

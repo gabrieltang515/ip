@@ -116,4 +116,44 @@ public class TaskList {
         }
         return sb.toString().trim();
     }
+
+    /**
+     * Returns all tasks whose descriptions contain the given keyword
+     * (case-insensitive).
+     *
+     * @param keyword keyword to search for
+     * @return list of matching tasks (order preserved)
+     */
+    public java.util.List<Task> find(String keyword) {
+        java.util.ArrayList<Task> out = new java.util.ArrayList<>();
+        String k = keyword.toLowerCase();
+        for (Task t : tasks) {
+            if (t.description.toLowerCase().contains(k)) {
+                out.add(t);
+            }
+        }
+        return out;
+    }
+
+
+    /**
+     * Formats the matching tasks in the same style used by the examples.
+     * Numbering starts at 1 within the result set.
+     *
+     * @param keyword keyword to search for
+     * @return multi-line formatted result, or "(no matching tasks)" if none
+     */
+    public String formatMatches(String keyword) {
+        java.util.List<Task> matches = find(keyword);
+        if (matches.isEmpty()) {
+            return "(no matching tasks)";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the matching tasks in your list:")
+                .append(System.lineSeparator());
+        for (int i = 0; i < matches.size(); i++) {
+            sb.append(String.format("%d.%s%n", i + 1, matches.get(i)));
+        }
+        return sb.toString().trim();
+    }
 }
