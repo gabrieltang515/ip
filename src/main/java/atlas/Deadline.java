@@ -6,13 +6,13 @@ import java.time.format.DateTimeFormatter;
 /**
  * A task that needs to be completed by a specific date.
  * <p>
- * Dates are stored as {@link LocalDate} and are accepted from the user in
- * ISO format {@code yyyy-MM-dd}. They are shown in the list as
- * {@code MMM d yyyy} (e.g., {@code Oct 15 2025}).
+ * Dates are stored as LocalDate and are accepted from the user in
+ * ISO format {yyyy-MM-dd}. They are shown in the list as
+ * {MMMM dd yyyy} (e.g., {Oct 15 2025}).
  */
 public class Deadline extends Task {
     protected LocalDate by;
-    
+
     private static final DateTimeFormatter IN = DateTimeFormatter.ISO_LOCAL_DATE;
     private static final DateTimeFormatter OUT = DateTimeFormatter.ofPattern("MMM d yyyy");
 
@@ -27,13 +27,14 @@ public class Deadline extends Task {
         super(description);
         this.by = LocalDate.parse(by, IN);
     }
-    
+
     @Override
     protected String typeCode() {
         return "D";
     }
 
-    /** {@inheritDoc}
+    /**
+     * {@inheritDoc}
      * with date rendered in a friendly format.
      */
     @Override

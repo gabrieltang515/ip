@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 /**
  * Runs the Atlas chatbot application.
- * <p>
  * This class wires together the UI, storage, and task list, and coordinates
  * the application's lifecycle.
  */

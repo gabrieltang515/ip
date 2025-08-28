@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Persists the task list to a simple text file and loads it back.
- *
+ * <p>
  * The file is created lazily and parent directories are created if necessary.
  */
 public class Storage {

@@ -18,7 +18,9 @@ public abstract class Task {
         this.isDone = false;
     }
 
-    /** Marks this task as done. */
+    /**
+     * Marks this task as done.
+     */
     public void mark() {
         this.isDone = true;
     }
@@ -26,7 +28,7 @@ public abstract class Task {
     /**
      * Returns the status icon used in the list output.
      *
-     * @return {@code "X"} if done, otherwise a single space
+     * @return "X" if done, otherwise a single space
      */
     public void unmark() {
         this.isDone = false;
