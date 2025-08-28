@@ -15,7 +15,7 @@ public class Parser {
      *
      * @param input   raw user input
      * @param tasks   task list to operate on
-     * @param ui      UI for showing messages
+     * @param ui      UI for showing messages to users
      * @param storage storage for persisting changes
      * @return true if the user asked to exit (i.e. bye)
      * @throws AtlasException if the input is invalid or arguments are missing
