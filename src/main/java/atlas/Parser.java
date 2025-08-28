@@ -3,7 +3,23 @@ package atlas;
 import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses user input lines and performs the requested actions by
+ * mutating the TaskList, talking to Storage, and using Ui
+ * to show messages.
+ */
 public class Parser {
+
+    /**
+     * Parses a single user input line and executes the command.
+     *
+     * @param input   raw user input
+     * @param tasks   task list to operate on
+     * @param ui      UI for showing messages
+     * @param storage storage for persisting changes
+     * @return true if the user asked to exit (i.e. bye)
+     * @throws AtlasException if the input is invalid or arguments are missing
+     */
     public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) throws AtlasException {
         if (input == null) {
             return false;

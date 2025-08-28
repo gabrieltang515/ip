@@ -7,13 +7,31 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Persists the task list to a simple text file and loads it back.
+ * <p>
+ * The file is created lazily and parent directories are created if necessary.
+ */
 public class Storage {
     private final Path file;
 
+    /**
+     * Creates a storage instance bound to the given relative/absolute path.
+     *
+     * @param relativePath path to the save file (e.g. data/Atlas.txt)
+     */
     public Storage(String relativePath) {
         this.file = Paths.get(relativePath);
     }
 
+
+    /**
+     * Loads tasks from disk. If the file does not exist, an empty list is returned
+     * and the parent directory is created so that subsequent saves succeed.
+     *
+     * @return list of tasks loaded from the save file
+     * @throws IOException if the file exists but cannot be read
+     */
     public List<Task> load() throws IOException {
         List<Task> out = new ArrayList<>();
 
@@ -34,6 +52,12 @@ public class Storage {
         return out;
     }
 
+    /**
+     * Saves all tasks to disk, overwriting the file.
+     *
+     * @param tasks tasks to write
+     * @throws IOException if the file cannot be written
+     */
     public void save(List<Task> tasks) throws IOException {
         if (file.getParent() != null) {
             Files.createDirectories(file.getParent());
@@ -45,6 +69,7 @@ public class Storage {
         Files.write(file, lines);
     }
 
+    // Parses a single save line; invalid lines are ignored.
     private Task parse(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
