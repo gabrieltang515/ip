@@ -11,6 +11,7 @@ public class Atlas {
     private final Ui ui = new Ui();
     private final Storage storage = new Storage("data/duke.txt");
     private TaskList tasks;
+    private String commandType;
 
     /**
      * Constructs an {@code Atlas} instance.
@@ -32,7 +33,8 @@ public class Atlas {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-        new Atlas().run();
+//        new Atlas().run();
+        System.out.println("Welcome to the Atlas");
     }
 
     // Private helper: runs the input loop and delegates to Parser.
@@ -51,5 +53,13 @@ public class Atlas {
                 }
             }
         }
+    }
+
+    public String getResponse(String input) {
+        return "Atlas heard: " + input;
+    }
+
+    public String getCommandType() {
+        return commandType;
     }
 }
