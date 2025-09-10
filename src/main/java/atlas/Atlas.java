@@ -56,7 +56,44 @@ public class Atlas {
     }
 
     public String getResponse(String input) {
-        return "Atlas heard: " + input;
+        // Reset command type for this turn
+        this.commandType = null;
+
+        if (input == null || input.trim().isEmpty()) {
+            return "";
+        }
+
+        // Infer command type for dialog styling (purely for GUI cosmetics)
+        String trimmed = input.trim();
+        String[] parts = trimmed.split("\\s+", 2);
+        String cmd = parts[0];
+        switch (cmd) {
+        case "todo":
+        case "deadline":
+        case "event":
+            this.commandType = "AddCommand";
+            break;
+        case "mark":
+        case "unmark":
+            this.commandType = "ChangeMarkCommand";
+            break;
+        case "delete":
+            this.commandType = "DeleteCommand";
+            break;
+        default:
+
+        }
+
+        try {
+            boolean quit = Parser.parse(trimmed, tasks, ui, storage);
+            if (quit) {
+                this.commandType = null; // neutral styling on exit
+            }
+            return ui.getLast();
+        } catch (AtlasException e) {
+            ui.showError(e.getMessage());
+            return ui.getLast();
+        }
     }
 
     public String getCommandType() {

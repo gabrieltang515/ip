@@ -53,7 +53,7 @@ public class DialogBox extends HBox {
         return new DialogBox(text, img);
     }
 
-    private void changeDialogStyle(String commandType) {
+    public void changeDialogStyle(String commandType) {
         switch(commandType) {
         case "AddCommand":
             dialog.getStyleClass().add("add-label");

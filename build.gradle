@@ -44,7 +44,7 @@ test {
 
 application {
 //    mainClass.set("atlas.Atlas")
-    mainClass.set("Launcher")
+    mainClass.set("atlas.Launcher")
 }
 
 jar {
@@ -54,10 +54,11 @@ jar {
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "atlas"
     archiveClassifier = null
 }
 
 run{
+    enableAssertions = true
     standardInput = System.in
 }

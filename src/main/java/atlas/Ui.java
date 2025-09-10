@@ -5,6 +5,7 @@ package atlas;
  */
 public class Ui {
     private static final String LINE = "____________________________________________________________";
+    private String last;
 
     /**
      * Shows arbitrary text inside the standard frame.
@@ -12,6 +13,7 @@ public class Ui {
      * @param body text to display (may contain multiple lines)
      */
     public void show(String body) {
+        last = body;
         System.out.println(LINE);
         for (String line : body.split("\\R")) {
             System.out.println(" " + line);
@@ -37,5 +39,9 @@ public class Ui {
      */
     public void showError(String msg) {
         show("Oops - " + msg);
+    }
+
+    public String getLast() {
+        return last == null ? "" : last;
     }
 }

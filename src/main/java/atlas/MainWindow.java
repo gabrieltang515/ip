@@ -1,6 +1,7 @@
 package atlas;
 
 import javafx.fxml.FXML;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -55,11 +56,17 @@ public class MainWindow extends AnchorPane {
         String input = userInput.getText();
         String response = atlas.getResponse(input);
         String commandType = atlas.getCommandType();
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, atlasImage)
-        );
+        var userDb = DialogBox.getUserDialog(input, userImage);
+        var dukeDb = DialogBox.getDukeDialog(response, atlasImage);
+        if (commandType != null) {
+            dukeDb.changeDialogStyle(commandType);
+        }
+        dialogContainer.getChildren().addAll(userDb, dukeDb);
         userInput.clear();
+
+        if ("bye".equals(input.trim())) {
+            Platform.exit();
+        }
     }
 
 }
