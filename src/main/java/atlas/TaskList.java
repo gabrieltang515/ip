@@ -9,6 +9,13 @@ import java.util.List;
  */
 public class TaskList {
     private final ArrayList<Task> tasks;
+    
+    // Constants for formatting
+    private static final int USER_DISPLAY_OFFSET = 1; // Convert 0-based to 1-based indexing
+    private static final String NO_TASKS_MESSAGE = "(no tasks yet)";
+    private static final String NO_MATCHING_TASKS_MESSAGE = "(no matching tasks)";
+    private static final String TASKS_LIST_HEADER = "Here are the tasks in your list:";
+    private static final String MATCHING_TASKS_HEADER = "Here are the matching tasks in your list:";
 
     public TaskList() {
         this.tasks = new ArrayList<>();
@@ -106,13 +113,13 @@ public class TaskList {
      */
     public String formatList() {
         if (tasks.isEmpty()) {
-            return "(no tasks yet)";
+            return NO_TASKS_MESSAGE;
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Here are the tasks in your list: ").append(System.lineSeparator());
+        sb.append(TASKS_LIST_HEADER).append(System.lineSeparator());
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append(String.format("%d.%s%n", i + 1, tasks.get(i)));
+            sb.append(String.format("%d.%s%n", i + USER_DISPLAY_OFFSET, tasks.get(i)));
         }
         return sb.toString().trim();
     }
@@ -146,13 +153,13 @@ public class TaskList {
     public String formatMatches(String keyword) {
         java.util.List<Task> matches = find(keyword);
         if (matches.isEmpty()) {
-            return "(no matching tasks)";
+            return NO_MATCHING_TASKS_MESSAGE;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Here are the matching tasks in your list:")
+        sb.append(MATCHING_TASKS_HEADER)
                 .append(System.lineSeparator());
         for (int i = 0; i < matches.size(); i++) {
-            sb.append(String.format("%d.%s%n", i + 1, matches.get(i)));
+            sb.append(String.format("%d.%s%n", i + USER_DISPLAY_OFFSET, matches.get(i)));
         }
         return sb.toString().trim();
     }

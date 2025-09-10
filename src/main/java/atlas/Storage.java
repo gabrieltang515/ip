@@ -69,50 +69,54 @@ public class Storage {
         Files.write(file, lines);
     }
 
+    // Named constants for array indices
+    private static final int TYPE_INDEX = 0;
+    private static final int STATUS_INDEX = 1;
+    private static final int DESCRIPTION_INDEX = 2;
+    private static final int DATE_INDEX = 3;
+    private static final int FROM_INDEX = 3;
+    private static final int TO_INDEX = 4;
+    
+    // Task type constants
+    private static final String TODO_TYPE = "T";
+    private static final String DEADLINE_TYPE = "D";
+    private static final String EVENT_TYPE = "E";
+    private static final String DONE_STATUS = "1";
+
     // Parses a single save line; invalid lines are ignored.
     private Task parse(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
         }
 
-        // Regex trims the spaces between pipes
-        String[] p = line.split("\\s*\\|\\s*");
-
-        try {
-            String type = p[0];
-            boolean done = "1".equals(p[1]);
-            switch (type) {
-            case "T": {
-                Task t = new Todo(p[2]);
-                if (done) {
-                    t.mark();
-                }
-                return t;
-            }
-
-            case "D": {
-                Deadline d = new Deadline(p[2], p[3]);
-                if (done) {
-                    d.mark();
-                }
-                return d;
-            }
-
-            case "E": {
-                Event e = new Event(p[2], p[3], p[4]);
-                if (done) {
-                    e.mark();
-                }
-                return e;
-            }
-
-            default: {
-                return null;
-            }
-            }
-        } catch (Exception ignore) {
+        String[] parts = line.split("\\s*\\|\\s*");
+        if (parts.length < 3) {
             return null;
         }
+
+        try {
+            return createTaskFromParts(parts);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    private Task createTaskFromParts(String[] parts) {
+        String type = parts[TYPE_INDEX];
+        boolean done = DONE_STATUS.equals(parts[STATUS_INDEX]);
+        
+        Task task = switch (type) {
+            case TODO_TYPE -> new Todo(parts[DESCRIPTION_INDEX]);
+            case DEADLINE_TYPE -> new Deadline(parts[DESCRIPTION_INDEX], parts[DATE_INDEX]);
+            case EVENT_TYPE -> new Event(parts[DESCRIPTION_INDEX], parts[FROM_INDEX], parts[TO_INDEX]);
+            default -> null;
+        };
+        
+        if (task != null && done) {
+            task.mark();
+        }
+        
+        return task;
     }
 
 }

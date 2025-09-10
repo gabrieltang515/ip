@@ -55,34 +55,28 @@ public class Atlas {
         }
     }
 
+    // Command type constants for dialog styling
+    private static final String ADD_COMMAND = "AddCommand";
+    private static final String CHANGE_MARK_COMMAND = "ChangeMarkCommand";
+    private static final String DELETE_COMMAND = "DeleteCommand";
+    
+    // Command constants
+    private static final String TODO_CMD = "todo";
+    private static final String DEADLINE_CMD = "deadline";
+    private static final String EVENT_CMD = "event";
+    private static final String MARK_CMD = "mark";
+    private static final String UNMARK_CMD = "unmark";
+    private static final String DELETE_CMD = "delete";
+
     public String getResponse(String input) {
-        // Reset command type for this turn
-        this.commandType = null;
+        resetCommandType();
 
         if (input == null || input.trim().isEmpty()) {
             return "";
         }
 
-        // Infer command type for dialog styling (purely for GUI cosmetics)
         String trimmed = input.trim();
-        String[] parts = trimmed.split("\\s+", 2);
-        String cmd = parts[0];
-        switch (cmd) {
-        case "todo":
-        case "deadline":
-        case "event":
-            this.commandType = "AddCommand";
-            break;
-        case "mark":
-        case "unmark":
-            this.commandType = "ChangeMarkCommand";
-            break;
-        case "delete":
-            this.commandType = "DeleteCommand";
-            break;
-        default:
-
-        }
+        inferCommandType(trimmed);
 
         try {
             boolean quit = Parser.parse(trimmed, tasks, ui, storage);
@@ -94,6 +88,22 @@ public class Atlas {
             ui.showError(e.getMessage());
             return ui.getLast();
         }
+    }
+    
+    private void resetCommandType() {
+        this.commandType = null;
+    }
+    
+    private void inferCommandType(String input) {
+        String[] parts = input.split("\\s+", 2);
+        String cmd = parts[0];
+        
+        this.commandType = switch (cmd) {
+            case TODO_CMD, DEADLINE_CMD, EVENT_CMD -> ADD_COMMAND;
+            case MARK_CMD, UNMARK_CMD -> CHANGE_MARK_COMMAND;
+            case DELETE_CMD -> DELETE_COMMAND;
+            default -> null;
+        };
     }
 
     public String getCommandType() {
