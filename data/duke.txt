@@ -7,3 +7,5 @@ D | 0 | wash clothes | 2025-06-09
 E | 0 | 2103T tutorial | 2025-06-10 | 2025-06-11
 D | 0 | 2103 tasks | 2026-12-12
 T | 0 | read notes
+T | 0 | 2100 assignment
+D | 0 | wash clothes | 2025-06-10

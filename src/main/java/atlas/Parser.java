@@ -29,6 +29,7 @@ public class Parser {
     private static final String DESCRIPTION_REQUIRED_ERROR = "Description and ISO date (yyyy-MM-dd) must be provided.";
     private static final String EVENT_DESCRIPTION_REQUIRED_ERROR = "Description, '/from', and '/to' must be provided.";
     private static final String TODO_DESCRIPTION_ERROR = "The description of a todo cannot be empty.\n Try: todo borrow book";
+    private static final String DUPLICATE_TASK_ERROR = "This task already exists in your list!";
 
     /**
      * Parses a single user input line and executes the command.
@@ -97,7 +98,11 @@ public class Parser {
     
     private static boolean handleTodo(String[] parts, TaskList tasks, Ui ui, Storage storage) throws AtlasException {
         String desc = requireArg(parts, TODO_DESCRIPTION_ERROR);
-        tasks.add(new Todo(desc));
+        Todo newTodo = new Todo(desc);
+        if (tasks.contains(newTodo)) {
+            throw new AtlasException(DUPLICATE_TASK_ERROR);
+        }
+        tasks.add(newTodo);
         showTaskAdded(tasks, ui, storage);
         return false;
     }
@@ -108,7 +113,11 @@ public class Parser {
         validateDeadlineParts(deadlineParts);
         
         try {
-            tasks.add(new Deadline(deadlineParts.description, deadlineParts.by));
+            Deadline newDeadline = new Deadline(deadlineParts.description, deadlineParts.by);
+            if (tasks.contains(newDeadline)) {
+                throw new AtlasException(DUPLICATE_TASK_ERROR);
+            }
+            tasks.add(newDeadline);
         } catch (DateTimeParseException e) {
             throw new AtlasException(INVALID_DATE_ERROR);
         }
@@ -121,7 +130,11 @@ public class Parser {
         EventParts eventParts = extractEventParts(rest);
         validateEventParts(eventParts);
         
-        tasks.add(new Event(eventParts.description, eventParts.from, eventParts.to));
+        Event newEvent = new Event(eventParts.description, eventParts.from, eventParts.to);
+        if (tasks.contains(newEvent)) {
+            throw new AtlasException(DUPLICATE_TASK_ERROR);
+        }
+        tasks.add(newEvent);
         showTaskAdded(tasks, ui, storage);
         return false;
     }

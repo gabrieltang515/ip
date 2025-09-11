@@ -70,5 +70,20 @@ public abstract class Task {
         return toStatusString();
     }
 
+    /**
+     * Two tasks are considered equal if they have the same type and description.
+     * Completion status is not considered for equality.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Task other = (Task) obj;
+        return description.equals(other.description);
+    }
 
+    @Override
+    public int hashCode() {
+        return description.hashCode();
+    }
 }

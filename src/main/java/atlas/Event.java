@@ -48,4 +48,20 @@ public class Event extends Task {
                 typeCode(), isDone ? 1 : 0, description, from, to);
     }
 
+    /**
+     * Two events are equal if they have the same description, from, and to times.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        Event other = (Event) obj;
+        return from.equals(other.from) && to.equals(other.to);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() + from.hashCode() + to.hashCode();
+    }
 }

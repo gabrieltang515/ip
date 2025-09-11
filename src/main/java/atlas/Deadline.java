@@ -55,5 +55,22 @@ public class Deadline extends Task {
         return String.format("%s | %d | %s | %s",
                 typeCode(), isDone ? 1 : 0, description, by.toString());
     }
+
+    /**
+     * Two deadlines are equal if they have the same description and due date.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        Deadline other = (Deadline) obj;
+        return by.equals(other.by);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() + by.hashCode();
+    }
 }
 

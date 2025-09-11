@@ -59,6 +59,17 @@ public class TaskList {
     }
 
     /**
+     * Checks if a task already exists in the list (ignoring completion status).
+     *
+     * @param t task to check for
+     * @return true if a duplicate exists
+     */
+    public boolean contains(Task t) {
+        assert t != null : "task to check must not be null";
+        return tasks.contains(t);
+    }
+
+    /**
      * Removes and returns the task at the given index.
      *
      * @param idx zero-based index
