@@ -21,6 +21,7 @@ public class Storage {
      * @param relativePath path to the save file (e.g. data/Atlas.txt)
      */
     public Storage(String relativePath) {
+        assert relativePath != null && !relativePath.trim().isEmpty() : "storage path must not be empty";
         this.file = Paths.get(relativePath);
     }
 
@@ -59,6 +60,7 @@ public class Storage {
      * @throws IOException if the file cannot be written
      */
     public void save(List<Task> tasks) throws IOException {
+        assert tasks != null : "tasks to save must not be null";
         if (file.getParent() != null) {
             Files.createDirectories(file.getParent());
         }

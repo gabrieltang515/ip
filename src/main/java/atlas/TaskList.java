@@ -54,6 +54,7 @@ public class TaskList {
      * @param t task to add
      */
     public void add(Task t) {
+        assert t != null : "added task must not be null";
         tasks.add(t);
     }
 
@@ -65,6 +66,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if {@code idx} is out of range
      */
     public Task remove(int idx) {
+        assert idx >= 0 && idx < tasks.size() : "remove index out of range";
         return tasks.remove(idx);
     }
 
@@ -76,6 +78,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException if {@code idx} is out of range
      */
     public Task get(int idx) {
+        assert idx >= 0 && idx < tasks.size() : "get index out of range";
         return tasks.get(idx);
     }
 
@@ -85,6 +88,7 @@ public class TaskList {
      * @param idx zero-based index
      */
     public void mark(int idx) {
+        assert idx >= 0 && idx < tasks.size() : "mark index out of range";
         tasks.get(idx).mark();
     }
 
@@ -94,6 +98,7 @@ public class TaskList {
      * @param idx zero-based index
      */
     public void unmark(int idx) {
+        assert idx >= 0 && idx < tasks.size() : "unmark index out of range";
         tasks.get(idx).unmark();
     }
 
@@ -151,6 +156,7 @@ public class TaskList {
      * @return multi-line formatted result, or "(no matching tasks)" if none
      */
     public String formatMatches(String keyword) {
+        assert keyword != null : "keyword must not be null";
         java.util.List<Task> matches = find(keyword);
         if (matches.isEmpty()) {
             return NO_MATCHING_TASKS_MESSAGE;

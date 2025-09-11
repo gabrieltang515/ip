@@ -13,6 +13,7 @@ public class Ui {
      * @param body text to display (may contain multiple lines)
      */
     public void show(String body) {
+        assert body != null : "UI body must not be null";
         last = body;
         System.out.println(LINE);
         for (String line : body.split("\\R")) {
