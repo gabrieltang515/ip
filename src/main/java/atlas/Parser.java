@@ -21,6 +21,9 @@ public class Parser {
      * @throws AtlasException if the input is invalid or arguments are missing
      */
     public static boolean parse(String input, TaskList tasks, Ui ui, Storage storage) throws AtlasException {
+        assert tasks != null : "tasks must not be null";
+        assert ui != null : "ui must not be null";
+        assert storage != null : "storage must not be null";
         if (input == null) {
             return false;
         }
@@ -159,6 +162,7 @@ public class Parser {
             if (n < 1 || n > size) {
                 throw new AtlasException("atlas.Task " + token + " is out of range (1.." + size + ").");
             }
+            assert n >= 1 && n <= size : "validated index must be within range";
             return n - 1;
         }
 

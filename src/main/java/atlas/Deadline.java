@@ -25,6 +25,8 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) {
         super(description);
+        assert description != null && !description.trim().isEmpty() : "Deadline description must not be empty";
+        assert by != null && !by.trim().isEmpty() : "Deadline 'by' date must not be empty";
         this.by = LocalDate.parse(by, IN);
     }
 
