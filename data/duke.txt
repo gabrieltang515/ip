@@ -6,6 +6,8 @@ T | 0 | read a book
 D | 0 | wash clothes | 2025-06-09
 E | 0 | 2103T tutorial | 2025-06-10 | 2025-06-11
 D | 0 | 2103 tasks | 2026-12-12
-T | 0 | read notes
 T | 0 | 2100 assignment
 D | 0 | wash clothes | 2025-06-10
+T | 0 | go dinner
+D | 0 | finish 2103 tasks | 2025-09-18
+E | 0 | formal dinner | 17 Sep evening | 17 Sep night
