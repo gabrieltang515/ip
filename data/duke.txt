@@ -1,7 +1,6 @@
 D | 1 | return book | 2025-09-30
 D | 0 | return book | 2025-10-15
 E | 0 | project meeting | Mon 2pm | 4pm
-T | 0 | eat bread
 T | 0 | read a book
 D | 0 | wash clothes | 2025-06-09
 E | 0 | 2103T tutorial | 2025-06-10 | 2025-06-11
@@ -11,3 +10,4 @@ D | 0 | wash clothes | 2025-06-10
 T | 0 | go dinner
 D | 0 | finish 2103 tasks | 2025-09-18
 E | 0 | formal dinner | 17 Sep evening | 17 Sep night
+T | 0 | drink milk

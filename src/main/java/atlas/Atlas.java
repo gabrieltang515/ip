@@ -33,7 +33,6 @@ public class Atlas {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-//        new Atlas().run();
         System.out.println("Welcome to the Atlas");
     }
 
